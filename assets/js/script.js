@@ -9,6 +9,7 @@ var searchForm = document.querySelector("#search-form")
 var searchInput = document.querySelector("#search-input")
 var searchBtn = document.querySelector("#search-button")
 var weatherResults = document.querySelector("#weather-results")
+var fiveDay = document.querySelector(".five-day")
 // declare variables for dom elements
 // form 
 // in put 
@@ -67,13 +68,53 @@ function renderCurrentWeather (city, weather) {
     weatherResults.innerHTML = ""
     weatherResults.append(container)
 }
-// you will need to know the  date 
+// you will need to know the  date
+function renderFiveDayCards (forecast) {
+    var iconUrl = `https://openweathermap.org/img/w/${forecast.weather[0].icon}.png`;
+    var iconDescription = forecast.weather[0].description
+    var tempF = forecast.main.temp
+    var windSpeed = forecast.wind.speed
+    var humidity = forecast.main.humidity
+    var cardTitle = dayjs(forecast.dt_txt).format("M/D/YYYY")
+    var fiveDayCard = `
+    <div class="card-column">
+        <div class="card">
+            <div class="card-wrapper">
+            <h5 class="card-title">${cardTitle}</h5>
+            <img src=${iconUrl} alt=${iconDescription}></img>
+                <p class="card-text">${tempF}</p>
+                <p class="card-text">${humidity}</p>
+                <p class="card-text">${windSpeed}</p>
+            </div>
+        </div>
+    </div>
+    `
+    fiveDay.append(fiveDayCard)
+
+} 
+
+function renderMiniForecast (daily) {
+    var firstDay = dayjs().add(1, "day").startOf("day").unix()
+    var lastDay = dayjs().add(6, "day").startOf("day").unix()
+    for(var i=0; i<daily.length;i++){
+        if (daily[i].dt >= firstDay && daily[i].dt < lastDay){
+            if (daily[i].dt_txt.slice(11, 13) =="12"){
+                renderFiveDayCards(daily[i])
+            }
+        }
+    }
+}
 
 // function for rendering the forecaar
 
 // function to render the forecast card 
 
 // function to  fetch thr weather from the api 
+function renderStuff (city, data) {
+    renderCurrentWeather(city, data.weather, data.timezone)
+    renderMiniForecast(data.weather)
+}
+
 function fetchWeather (location) {
     var {lat} = location
     var {lon} = location
@@ -85,7 +126,7 @@ function fetchWeather (location) {
     })
     .then(function (data){
         console.log(city, data)
-        renderCurrentWeather(city, data)
+        renderStuff(city, data)
     })
     .catch(function (error){
         console.error(error)
