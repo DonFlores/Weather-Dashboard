@@ -8,6 +8,7 @@ var rootUrl = 'https://api.openweathermap.org'
 var apiKey = 'df3fb9934a7d8ebae97c6749b588071a'
 var searchBtn = document.querySelector("#search-button")
 var fiveDay = document.querySelector(".five-day")
+var searchInput = document.querySelector("#search-input")
 
 // get timezone plugin and initialise it here
 var now = dayjs('2019-01-25').toDate()
@@ -53,7 +54,7 @@ var lon = data.coord.lon;
             console.log (uvStat);
 
             var uvIndex = uvStat.value;
-            var uvindexP = (`<p>UV Index: 
+            var uvIndexP = (`<p>UV Index: 
             <span id="uvIndexColor" class="px-2 py-2 rounded">${uvIndex}</span>
         </p>
             `);
@@ -82,12 +83,12 @@ var lon = data.coord.lon;
               .then(function (weekResponse) {
                 $(".five-day").empty();
 
-                let fiveDayArray = weekResponse.list.filter(day => day.dt_txt.includes('12:00:00'));
-                for (let i = 0; i < fiveDayArray.length; i++) {
+                let fiveDayArr = weekResponse.list.filter(day => day.dt_txt.includes('12:00:00'));
+                for (let i = 0; i < fiveDayArr.length; i++) {
                     
                     // Creating array to loop through 5 day data and creating div to append
-                  var currDate = new Date(fiveDayArray[i].dt_txt).toLocaleString().split(",")[0];
-                  var iconURL = fiveDayArray[i].weather[0].icon;
+                  var currDate = new Date(fiveDayArr[i].dt_txt).toLocaleString().split(",")[0];
+                  var iconURL = fiveDayArr[i].weather[0].icon;
                   var iconPic = `<img src="http://openweathermap.org/img/wn/${iconURL}@2x.png"/>`
                   var futureCard = $(`
                   <div class="pl-3">
